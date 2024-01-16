@@ -1,0 +1,43 @@
+-- Creation des tables
+
+CREATE TABLE ETUDIANT (
+  numEtud VARCHAR2(10) PRIMARY KEY,
+  nom VARCHAR2(20),
+  prenom VARCHAR2(20),
+  datenaiss DATE,
+  civilite VARCHAR2(4) CHECK (civilite IN ('Mr', 'Mme', 'Mlle')),
+  numsecu NUMBER(15) NOT NULL
+);
+
+CREATE TABLE MODULE (
+  codMod VARCHAR2(5) PRIMARY KEY,
+  nomMod VARCHAR2(20),
+  effecMax NUMBER(4) DEFAULT 30
+);
+
+CREATE TABLE EXAMEN (
+  codMod VARCHAR2(5) REFERENCES MODULE(codMod),
+  codExam NUMBER(4) PRIMARY KEY,
+  dateExam DATE
+);
+
+CREATE TABLE INSCRIPTION (
+  numEtud VARCHAR2(10) REFERENCES ETUDIANT(numEtud),
+  codMod VARCHAR2(5) REFERENCES MODULE(codMod),
+  dateInsc DATE DEFAULT SYSDATE,
+  PRIMARY KEY (numEtud, codMod)
+);
+
+CREATE TABLE PREREQUIS (
+  codMod VARCHAR2(5) REFERENCES MODULE(codMod),
+  codModPrereq VARCHAR2(5) PRIMARY KEY,
+  noteMin DECIMAL(2,3) NOT NULL
+);
+
+CREATE TABLE RESULTAT (
+  codMod VARCHAR2(5) REFERENCES MODULE(codMod),
+  codExam NUMBER(4) REFERENCES EXAMEN(codExam),
+  numEtud VARCHAR2(10) REFERENCES ETUDIANT(numEtud),
+  note DECIMAL(2,3),
+  PRIMARY KEY (codMod, codExam, numEtud)
+);
